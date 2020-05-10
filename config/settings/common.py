@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third apps
+    'bootstrap4',
     'debug_toolbar',
     # Local apps
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +76,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'accounts.User'
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
