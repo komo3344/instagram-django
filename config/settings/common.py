@@ -141,3 +141,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 INTERNAL_IPS = ['127.0.0.1']
+
+# Email with Send Grid
+# SENDGRID_API_KEY = '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'
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+WELCOME_EMAIL_SENDER = os.environ.get('WELCOME_EMAIL_SENDER')
+
