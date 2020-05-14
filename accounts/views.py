@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
-from django.contrib.auth.views import LoginView, logout_then_login
+from django.contrib.auth.views import (
+    LoginView, logout_then_login, PasswordChangeView as AuthPasswordChangeView)
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.urls import reverse_lazy
 from . import forms
 
 login = LoginView.as_view(template_name="accounts/login_form.html")
@@ -26,6 +30,7 @@ def signup(request):
         'form': form
     })
 
+@login_required
 def profile_edit(request):
     if request.method == 'POST':
         form = forms.ProfileEditForm(request.POST, request.FILES, instance=request.user)
@@ -38,3 +43,14 @@ def profile_edit(request):
     return render(request, 'accounts/profile_edit_form.html',{
         'form': form
     })
+
+class PasswordChangeView(LoginRequiredMixin, AuthPasswordChangeView):
+    form_class = forms.PasswordChangeForm
+    success_url = reverse_lazy('password_change')
+    template_name = 'accounts/password_change_form.html'
+
+    def form_valid(self, form):
+        messages.success(self.request, '암호가 변경되었습니다')
+        return super().form_valid(form)
+
+password_change = PasswordChangeView.as_view()

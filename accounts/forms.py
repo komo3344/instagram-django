@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import (
+    UserCreationForm, PasswordChangeForm as AuthPasswordChangeForm)
 from .models import User
 
 class SignupForm(UserCreationForm):
@@ -25,3 +26,14 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['avatar', 'first_name', 'last_name', 'website_url', 'bio', 'gender', 'phone_number']
+
+class PasswordChangeForm(AuthPasswordChangeForm):
+    def clean_new_password2(self):
+        old_password = self.cleaned_data["old_password"]
+        new_password2 = self.cleaned_data["new_password2"]
+        # new_password2 = super().clean_new_password2() 상속받은 것을 사용하고자 할 때 이것도 가능
+        
+        if old_password and new_password2:
+            if old_password == new_password2:
+                raise forms.ValidationError('새 암호는 기존 암호와 다르게 해주세요')
+        return new_password2
