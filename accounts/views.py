@@ -25,3 +25,16 @@ def signup(request):
     return render(request, 'accounts/signup_form.html', {
         'form': form
     })
+
+def profile_edit(request):
+    if request.method == 'POST':
+        form = forms.ProfileEditForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '프로필이 수정/저장 되었습니다.')
+            return redirect('profile_edit')
+    else:
+        form = forms.ProfileEditForm(instance=request.user)
+    return render(request, 'accounts/profile_edit_form.html',{
+        'form': form
+    })
