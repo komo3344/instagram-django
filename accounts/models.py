@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.template.loader import render_to_string
+from django.shortcuts import resolve_url
 
 class User(AbstractUser):
     class GenderChoices(models.TextChoices):
@@ -15,6 +16,17 @@ class User(AbstractUser):
     avatar = models.ImageField(blank=True, upload_to='accounts/profile/%Y/%m/%d', help_text='48px * 48px 크기의 png/jpeg 이미지를 업로드 해주세요')
     gender = models.CharField(max_length=1, choices=GenderChoices.choices, blank=True)
     phone_number = models.CharField(max_length=13, blank=True, validators=[RegexValidator(r'^010-?[0-9]\d{3}-?\d{4}$')])
+
+    @property
+    def name(self):
+        return f"{self.first_name} {self.last_name}"
+    
+    @property
+    def avatar_url(self):
+        if self.avatar:
+            return self.avatar.url
+        else:
+            return resolve_url('pydenticon_image', self.username)
 
     def send_welcome_email(self):
         
