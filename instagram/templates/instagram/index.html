@@ -11,6 +11,7 @@
     <div class="row">
         <div class="col-sm-8">
             TimeLine
+            {{ user.following_set.all }}
         </div>
         <div class="col-sm-4">
             {% include "instagram/timeline_sidebar.html" %}

@@ -11,6 +11,9 @@ class User(AbstractUser):
         Male = 'M', '남성'
         Female = 'F', '여성'
 
+    follower_set = models.ManyToManyField("self", blank=True)
+    following_set = models.ManyToManyField("self", blank=True)
+    
     website_url = models.URLField(blank=True)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(blank=True, upload_to='accounts/profile/%Y/%m/%d', help_text='48px * 48px 크기의 png/jpeg 이미지를 업로드 해주세요')
