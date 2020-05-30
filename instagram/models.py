@@ -3,7 +3,14 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
-class Post(models.Model):
+class BaseModel(models.Model):  # TODO core 앱에 모델로 처리해 볼 것
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class Post(BaseModel):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
     photo = models.ImageField()
     caption = models.CharField(max_length=500)
