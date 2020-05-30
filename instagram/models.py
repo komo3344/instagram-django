@@ -11,11 +11,12 @@ class BaseModel(models.Model):  # TODO core 앱에 모델로 처리해 볼 것
         abstract = True
 
 class Post(BaseModel):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='my_post_set')
     photo = models.ImageField()
     caption = models.CharField(max_length=500)
     location = models.CharField(max_length=50)
     tag_set = models.ManyToManyField('Tag', blank=True)
+    like_user_set = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='like_post_set')
 
     def __str__(self):
         return self.caption
@@ -31,6 +32,12 @@ class Post(BaseModel):
     def get_absolute_url(self):
         return reverse("instagram:post_detail", kwargs={"pk": self.pk})
     
+    def is_like_user(self, user):
+        return self.like_user_set.filter(pk=user.pk).exists()
+    
+    class Meta:
+        ordering = ['-id']
+        
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
