@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.utils import timezone
-from .forms import PostForm
-from .models import Post
+from .forms import PostForm, CommentForm
+from .models import Post, Comment
 
 @login_required
 def index(request):
@@ -81,4 +81,22 @@ def user_page(request, username):
     post_list_count = post_list.count()
     return render(request, 'instagram/user_page.html', {
         'page_user': page_user, 'post_list': post_list, 'post_list_count': post_list_count, 'is_follow': is_follow
+    })
+
+@login_required
+def comment_new(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST, request.FILES)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect(comment.post) # post 모델 객체로 이동
+    else:
+        form = CommentForm()
+    return render(request, 'instagram/comment_form.html', {
+        'form': form
     })

@@ -37,7 +37,14 @@ class Post(BaseModel):
     
     class Meta:
         ordering = ['-id']
-        
+
+class Comment(BaseModel):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey("post", on_delete=models.CASCADE)
+    message = models.TextField()
+
+    class Meta:
+        ordering = ['-id']
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
