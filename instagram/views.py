@@ -99,6 +99,10 @@ def comment_new(request, post_pk):
             comment.post = post
             comment.author = request.user
             comment.save()
+            if request.is_ajax(): # 없어질 속성(axios사용시 적용안됨)
+                return render(request, 'instagram/_comment.html', {
+                    "comment": comment,
+                })
             return redirect(comment.post) # post 모델 객체로 이동
     else:
         form = CommentForm()
